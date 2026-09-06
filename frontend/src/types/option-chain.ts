@@ -553,7 +553,7 @@ export const DEFAULT_PREFERENCES: OptionChainPreferences = {
   viewMode: 'price',
   modes: DEFAULT_MODE_PREFERENCES,
   strikeCount: 10,
-  selectedUnderlying: 'NIFTY',
+  selectedUnderlying: 'AAPL',
   barDataSource: 'oi',
   barStyle: 'gradient',
 }

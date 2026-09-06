@@ -53,7 +53,7 @@ def get_multi_strike_oi_data(
         Tuple of (success: bool, response: dict, status_code: int).
     """
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         start_date_str, end_date_str = _resolve_trading_window(days, ist)
 
         base_symbol = (underlying or "").strip().upper()

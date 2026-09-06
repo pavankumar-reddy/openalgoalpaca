@@ -73,7 +73,7 @@ class FundManager:
                         today_realized_pnl=Decimal("0.00"),
                         unrealized_pnl=Decimal("0.00"),
                         total_pnl=Decimal("0.00"),
-                        last_reset_date=datetime.now(pytz.timezone("Asia/Kolkata")),
+                        last_reset_date=datetime.now(pytz.timezone("America/New_York")),
                         reset_count=0,
                     )
                     db_session.add(funds)
@@ -136,7 +136,7 @@ class FundManager:
             if reset_day.lower() == "never":
                 return  # Skip reset check entirely
 
-            ist = pytz.timezone("Asia/Kolkata")
+            ist = pytz.timezone("America/New_York")
             now = datetime.now(ist)
             last_reset = funds.last_reset_date
 
@@ -174,7 +174,7 @@ class FundManager:
                 funds.today_realized_pnl = Decimal("0.00")
                 funds.unrealized_pnl = Decimal("0.00")
                 funds.total_pnl = Decimal("0.00")
-                funds.last_reset_date = datetime.now(pytz.timezone("Asia/Kolkata"))
+                funds.last_reset_date = datetime.now(pytz.timezone("America/New_York"))
                 funds.reset_count += 1
 
                 db_session.commit()
@@ -549,7 +549,7 @@ class FundManager:
         """Get leverage multiplier based on exchange, product, symbol type, and action"""
         try:
             # Equity exchanges
-            if exchange in ["NSE", "BSE"]:
+            if exchange in ["NASDAQ", "NYSE", "AMEX", "OTCQX", "NSE", "BSE"]:
                 if product == "MIS":
                     return Decimal(get_config("equity_mis_leverage", "5"))
                 elif product == "CNC":

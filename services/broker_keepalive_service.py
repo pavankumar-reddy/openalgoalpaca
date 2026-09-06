@@ -32,7 +32,7 @@ from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-_IST = pytz.timezone("Asia/Kolkata")
+_IST = pytz.timezone("America/New_York")
 
 _ENABLED = os.getenv("BROKER_CONNECTION_KEEPALIVE", "TRUE").strip().upper() in (
     "TRUE",

@@ -373,7 +373,7 @@ def get_capabilities():
                 "status": "success",
                 "data": {
                     "broker_name": broker,
-                    "broker_type": "IN_stock",
+                    "broker_type": "US_stock",
                     "supported_exchanges": [],
                     "leverage_config": False,
                 },

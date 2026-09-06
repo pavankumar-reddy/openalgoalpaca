@@ -75,9 +75,12 @@ npm run build</pre>
 
 
 # Index/Home route
+from flask import redirect, url_for
+
 @react_bp.route("/")
 def react_index():
-    return serve_react_app()
+    # Redirect SPA index to the server-side dashboard which prompts for Alpaca details
+    return redirect(url_for('dashboard_bp.dashboard'))
 
 
 # Login route
@@ -155,7 +158,9 @@ def react_broker_auth(broker):
 # Dashboard
 @react_bp.route("/dashboard")
 def react_dashboard():
-    return serve_react_app()
+    # Redirect SPA dashboard route to server-side dashboard so users are prompted
+    # for Alpaca API details on first run.
+    return redirect(url_for('dashboard_bp.dashboard'))
 
 
 # Trading pages
@@ -496,6 +501,11 @@ def react_python_schedule(strategy_id):
 
 @react_bp.route("/python/guide", strict_slashes=False)
 def react_python_guide():
+    return serve_react_app()
+
+
+@react_bp.route("/ai-agent", strict_slashes=False)
+def react_ai_agent():
     return serve_react_app()
 
 

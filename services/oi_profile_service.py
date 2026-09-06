@@ -286,7 +286,7 @@ def get_oi_profile_data(
             futures_symbol = futures_info["symbol"]
             fut_exchange = futures_info["exchange"]
 
-            ist = pytz.timezone("Asia/Kolkata")
+            ist = pytz.timezone("America/New_York")
             # Generous calendar window; post-filter the returned candles to
             # the last N distinct trading dates with data so "3 days" stays
             # 3 days even when queried before market open / on holidays.

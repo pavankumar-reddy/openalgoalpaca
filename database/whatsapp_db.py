@@ -218,7 +218,7 @@ class WhatsAppUserPreference(Base):
     daily_summary = Column(Boolean, default=True)
     summary_time = Column(String(10), default="18:00")
     language = Column(String(10), default="en")
-    timezone = Column(String(50), default="Asia/Kolkata")
+    timezone = Column(String(50), default="America/New_York")
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
@@ -695,7 +695,7 @@ def get_user_preferences(whatsapp_jid: str) -> dict[str, Any]:
                 "daily_summary": True,
                 "summary_time": "18:00",
                 "language": "en",
-                "timezone": "Asia/Kolkata",
+                "timezone": "America/New_York",
             }
         else:
             result = {

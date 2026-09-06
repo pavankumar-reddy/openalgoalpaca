@@ -340,7 +340,7 @@ describe('StrategyBuilder live request orchestration', () => {
     useBrokerStore.setState({
       capabilities: {
         broker_name: 'test',
-        broker_type: 'IN_stock',
+        broker_type: 'US_stock',
         supported_exchanges: ['NCDEX'],
         leverage_config: false,
       },

@@ -225,7 +225,7 @@ def is_contract_expired_now(expiry_date, exchange, now=None):
     if expiry_date is None:
         return False
 
-    ist = pytz.timezone("Asia/Kolkata")
+    ist = pytz.timezone("America/New_York")
     now = now or datetime.now(ist)
     today = now.date()
 
@@ -1469,7 +1469,7 @@ def catchup_missed_settlements():
         cleanup_expired_contracts()
 
         # Then handle CNC T+1 settlement
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         today = datetime.now(ist).date()
         cutoff_time = datetime.combine(today, datetime.min.time())
 

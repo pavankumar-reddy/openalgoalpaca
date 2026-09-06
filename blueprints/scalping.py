@@ -41,7 +41,7 @@ SCALPING_STRATEGY = "Scalping"
 # Chart history: IST timezone + per-interval lookback (trading days). The bar
 # time carries a +5h30m offset so lightweight-charts (which renders UTC) shows
 # IST, and the client's live forming candle aligns with the history bars.
-IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("America/New_York")
 IST_OFFSET_SECONDS = 19800
 CHART_INTERVAL_TRADING_DAYS = {"1m": 1, "5m": 3, "15m": 9}
 

@@ -88,7 +88,7 @@ export default function PortfolioAnalyzer() {
       const res = await analyseHoldings({
         apikey: apiKey,
         lookback_days: lookback,
-        benchmark: 'NIFTY',
+        benchmark: 'SPY',
         source,
       })
       if (res.status !== 'success') throw new Error(res.message || 'analysis failed')

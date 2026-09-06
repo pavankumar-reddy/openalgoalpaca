@@ -97,7 +97,7 @@ def async_log_analyzer(request_data, response_data, api_type="placeorder"):
         response_json = json.dumps(response_data)
 
         # Get current time in IST
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         now_ist = datetime.now(ist)
 
         analyzer_log = AnalyzerLog(

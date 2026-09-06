@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 python_strategy_bp = Blueprint("python_strategy_bp", __name__, url_prefix="/python")
 
 # Timezone configuration - Indian Standard Time
-IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("America/New_York")
 
 # Global storage with thread locks for safety
 RUNNING_STRATEGIES = {}  # {strategy_id: {'process': subprocess.Popen, 'started_at': datetime}}

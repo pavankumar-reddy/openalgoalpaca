@@ -377,7 +377,7 @@ def reset_config():
                 fund.realized_pnl = Decimal("0.00")
                 fund.today_realized_pnl = Decimal("0.00")
                 fund.total_pnl = Decimal("0.00")
-                fund.last_reset_date = datetime.now(pytz.timezone("Asia/Kolkata"))
+                fund.last_reset_date = datetime.now(pytz.timezone("America/New_York"))
                 fund.reset_count = (fund.reset_count or 0) + 1
                 logger.info(f"Reset sandbox funds for user {user_id}")
             else:
@@ -391,7 +391,7 @@ def reset_config():
                     realized_pnl=Decimal("0.00"),
                     today_realized_pnl=Decimal("0.00"),
                     total_pnl=Decimal("0.00"),
-                    last_reset_date=datetime.now(pytz.timezone("Asia/Kolkata")),
+                    last_reset_date=datetime.now(pytz.timezone("America/New_York")),
                     reset_count=1,
                 )
                 db_session.add(fund)
@@ -646,7 +646,7 @@ def my_pnl():
         import pytz
 
         user_id = session.get("user")
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
 
         # Get all positions (both open and closed) for P&L history
         positions = (

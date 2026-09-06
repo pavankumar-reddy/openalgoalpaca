@@ -19,7 +19,7 @@ from utils.logging import get_logger
 logger = get_logger(__name__)
 
 # IST timezone
-IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("America/New_York")
 
 
 def get_last_session_boundary():

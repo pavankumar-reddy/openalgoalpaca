@@ -24,7 +24,7 @@ RUN cd frontend && npm run build
 # --------------------------------------------------------------------------- #
 # ------------------------------ Production Stage --------------------------- #
 FROM python:3.12-slim-bullseye AS production
-# 0 – set timezone to IST (Asia/Kolkata) & install runtime dependencies
+# 0 – set timezone to EST (America/New_York) & install runtime dependencies
 #     chromium + fonts-liberation are required by Kaleido 1.x (plotly static
 #     image export) which drives a real headless Chromium via choreographer.
 #     Without these, /chart in the Telegram bot silently fails inside Docker.
@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgfortran5 \
     chromium \
     fonts-liberation && \
-    ln -fs /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && \
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 # 1 – user & workdir.
@@ -80,7 +80,7 @@ RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    TZ=Asia/Kolkata \
+    TZ=America/New_York \
     APP_MODE=standalone \
     TMPDIR=/app/tmp \
     NUMBA_CACHE_DIR=/app/tmp/numba_cache \

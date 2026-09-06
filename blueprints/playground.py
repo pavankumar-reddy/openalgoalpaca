@@ -227,11 +227,11 @@ def categorize_endpoint(path):
     return "utilities"
 
 
-def load_bruno_endpoints(broker_type="IN_stock"):
-    """Load endpoints from Bruno .bru files for the given broker type (IN_stock or crypto)"""
+def load_bruno_endpoints(broker_type="US_stock"):
+    """Load endpoints from Bruno .bru files for the given broker type (US_stock or crypto)"""
     endpoints = {"account": [], "orders": [], "data": [], "utilities": [], "websocket": []}
 
-    # Load from broker-type-specific subfolder (IN_stock or crypto)
+    # Load from broker-type-specific subfolder (US_stock or crypto)
     collections_path = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), "collections", "openalgo", broker_type
     )
@@ -343,7 +343,7 @@ def get_endpoints():
 
         broker = session.get("broker", "")
         capabilities = get_broker_capabilities(broker)
-        broker_type = capabilities.get("broker_type", "IN_stock") if capabilities else "IN_stock"
+        broker_type = capabilities.get("broker_type", "US_stock") if capabilities else "US_stock"
 
         endpoints = load_bruno_endpoints(broker_type=broker_type)
 

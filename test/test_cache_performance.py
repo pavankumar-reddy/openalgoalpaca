@@ -226,7 +226,7 @@ def test_cache_performance():
         if final_stats.get("next_reset"):
             try:
                 expiry = datetime.fromisoformat(final_stats["next_reset"])
-                now = datetime.now(pytz.timezone("Asia/Kolkata"))
+                now = datetime.now(pytz.timezone("America/New_York"))
                 remaining = expiry - now
                 hours, remainder = divmod(remaining.seconds, 3600)
                 minutes, _ = divmod(remainder, 60)

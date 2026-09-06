@@ -1396,7 +1396,7 @@ def _server_time_info():
         from zoneinfo import ZoneInfo
 
         now_local = datetime.now()
-        now_ist = datetime.now(tz=ZoneInfo("Asia/Kolkata"))
+        now_ist = datetime.now(tz=ZoneInfo("America/New_York"))
         return {
             "server_time": now_local.strftime("%Y-%m-%d %H:%M:%S"),
             "server_tz": str(now_local.astimezone().tzinfo),

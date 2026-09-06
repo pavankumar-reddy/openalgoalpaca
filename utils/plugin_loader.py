@@ -42,7 +42,7 @@ def load_broker_capabilities(broker_directory="broker"):
             if "supported_exchanges" in plugin_data:
                 capabilities[broker_name] = {
                     "broker_name": broker_name,
-                    "broker_type": plugin_data.get("broker_type", "IN_stock"),
+                    "broker_type": plugin_data.get("broker_type", "US_stock"),
                     "supported_exchanges": plugin_data.get("supported_exchanges", []),
                     "leverage_config": plugin_data.get("leverage_config", False),
                 }

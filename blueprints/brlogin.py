@@ -56,7 +56,7 @@ def broker_callback(broker, para=None):
             logger.warning(f"User not in session for {broker} callback, redirecting to login")
             return redirect(url_for("auth.login"))
 
-    if session.get("logged_in"):
+    if request.method == "GET" and session.get("logged_in"):
         # Store broker in session and g
         session["broker"] = broker
         return redirect(url_for("dashboard_bp.dashboard"))
@@ -71,7 +71,28 @@ def broker_callback(broker, para=None):
     feed_token = None
     user_id = None
 
-    if broker == "fivepaisa":
+    if broker == "alpaca":
+        if request.method == "GET":
+            return redirect("/broker/alpaca/totp")
+        elif request.method == "POST":
+            payload = request.get_json(silent=True) or {}
+            logger.info(f"Alpaca POST request form: {dict(request.form)}, json: {payload}")
+            api_key = payload.get("api_key") or request.form.get("api_key")
+            api_secret = payload.get("api_secret") or request.form.get("api_secret")
+            auth_token, error_message = auth_function(api_key, api_secret)
+            forward_url = "broker.html"
+
+    elif broker == "robinhood":
+        if request.method == "GET":
+            return redirect("/broker/robinhood/totp")
+        elif request.method == "POST":
+            payload = request.get_json(silent=True) or {}
+            username = payload.get("username") or request.form.get("username")
+            password = payload.get("password") or request.form.get("password")
+            auth_token, error_message = auth_function(username, password)
+            forward_url = "broker.html"
+
+    elif broker == "fivepaisa":
         if request.method == "GET":
             # Redirect to React TOTP page
             return redirect("/broker/fivepaisa/totp")

@@ -52,6 +52,7 @@ const PnLTracker = lazy(() => import('@/pages/PnLTracker'))
 // Sandbox & Analyzer
 const Sandbox = lazy(() => import('@/pages/Sandbox'))
 const SandboxPnL = lazy(() => import('@/pages/SandboxPnL'))
+const AIAgentDashboard = lazy(() => import('@/pages/AIAgentDashboard'))
 const Analyzer = lazy(() => import('@/pages/Analyzer'))
 const WebSocketTest = lazy(() => import('@/pages/WebSocketTest'))
 const WebSocketOrder = lazy(() => import('@/pages/WebSocketOrder'))
@@ -218,6 +219,7 @@ function App() {
                 {/* Phase 4: Sandbox & Analyzer */}
                 <Route path="/sandbox" element={<Sandbox />} />
                 <Route path="/sandbox/mypnl" element={<SandboxPnL />} />
+                <Route path="/ai-agent" element={<AIAgentDashboard />} />
                 <Route path="/analyzer" element={<Analyzer />} />
                 <Route path="/tools" element={<Tools />} />
                 <Route path="/scalping" element={<Scalping />} />

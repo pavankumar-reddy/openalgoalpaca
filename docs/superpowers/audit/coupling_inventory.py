@@ -25,7 +25,7 @@ import re
 import subprocess
 from pathlib import Path
 
-SIGNAL = re.compile(r"₹|\bINR\b|Asia/Kolkata|\bIST\b|\bCNC\b|\bNRML\b|\bMIS\b|\bSEBI\b|\bSPAN\b")
+SIGNAL = re.compile(r"₹|\bINR\b|America/New_York|\bIST\b|\bCNC\b|\bNRML\b|\bMIS\b|\bSEBI\b|\bSPAN\b")
 EXCHANGE_CODES = re.compile(r"\bNSE\b|\bNFO\b|\bBSE\b|\bBFO\b|\bMCX\b|\bCDS\b|\bBCD\b|\bNCO\b")
 
 TARGETS = [

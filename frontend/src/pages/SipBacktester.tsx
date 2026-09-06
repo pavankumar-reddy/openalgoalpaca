@@ -49,18 +49,18 @@ export default function SipBacktester() {
   const { apiKey } = useAuthStore()
   const setResult = useSipBacktestStore((s) => s.setResult)
 
-  const [symbol, setSymbol] = useState('ICICIBANK')
-  const [exchange, setExchange] = useState<'NSE' | 'BSE'>('NSE')
+  const [symbol, setSymbol] = useState('AAPL')
+  const [exchange, setExchange] = useState<string>('NASDAQ')
   const [amount, setAmount] = useState(10000)
   const [frequency, setFrequency] = useState<SipFrequency>('monthly')
   const [dayOfMonth, setDayOfMonth] = useState(1)
   const [stepUp, setStepUp] = useState(0)
-  const [benchmark, setBenchmark] = useState('NIFTY')
+  const [benchmark, setBenchmark] = useState('SPY')
   const [source, setSource] = useState<PriceSource>('api')
   const [startDate, setStartDate] = useState(todayISO(5))
   const [endDate, setEndDate] = useState(todayISO(0))
   const [charges, setCharges] = useState<ChargeState>(DEFAULT_CHARGES)
-  const [costExchange, setCostExchange] = useState<'NSE' | 'BSE'>('NSE')
+  const [costExchange, setCostExchange] = useState<string>('NASDAQ')
 
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -276,13 +276,16 @@ export default function SipBacktester() {
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Exchange</Label>
-                <Select value={exchange} onValueChange={(v) => setExchange(v as 'NSE' | 'BSE')}>
+                <Select value={exchange} onValueChange={(v) => setExchange(v)}>
                   <SelectTrigger className="w-28">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="NSE">NSE</SelectItem>
                     <SelectItem value="BSE">BSE</SelectItem>
+                    <SelectItem value="NASDAQ">NASDAQ</SelectItem>
+                    <SelectItem value="NYSE">NYSE</SelectItem>
+                    <SelectItem value="AMEX">AMEX</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

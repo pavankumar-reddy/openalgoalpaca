@@ -43,7 +43,7 @@ export interface PortfolioRequestForm {
   rebalance: RebalanceRule
   source: PriceSource
   charges: ChargeState
-  costExchange: 'NSE' | 'BSE'
+  costExchange: string
   /** Percentage shown in the form. */
   riskFree: number
 }

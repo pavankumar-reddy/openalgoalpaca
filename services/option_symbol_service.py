@@ -282,31 +282,44 @@ def construct_option_symbol(
     base_symbol: str, expiry_date: str, strike: float, option_type: str
 ) -> str:
     """
-    Construct option symbol in OpenAlgo format.
+    Construct option symbol in US OSI format.
 
-    Format: [Base Symbol][Expiry Date][Strike Price][Option Type]
-
-    Args:
-        base_symbol: Base symbol like "NIFTY", "BANKNIFTY", "RELIANCE"
-        expiry_date: Expiry in DDMMMYY format like "28OCT25"
-        strike: Strike price like 23500 or 292.5
-        option_type: "CE" or "PE"
-
-    Returns:
-        Option symbol like "NIFTY28OCT2523500CE" or "VEDL25APR24292.5CE"
+    Format: [Root: 6 chars][Expiry: 6 chars YYMMDD][Type: 1 char C/P][Strike: 8 chars 00000000]
 
     Examples:
-        construct_option_symbol("NIFTY", "28MAR24", 20800, "CE") -> "NIFTY28MAR2420800CE"
-        construct_option_symbol("VEDL", "25APR24", 292.5, "CE") -> "VEDL25APR24292.5CE"
+        construct_option_symbol("AAPL", "16AUG24", 200, "CE") -> "AAPL  240816C00200000"
     """
-    # Format strike: Remove .0 if it's a whole number, otherwise keep decimal
-    if strike == int(strike):
-        strike_str = str(int(strike))
-    else:
-        strike_str = str(strike)
+    # 1. Root ticker padded to 6 chars
+    root = base_symbol.upper().ljust(6)
 
-    option_symbol = f"{base_symbol}{expiry_date}{strike_str}{option_type.upper()}"
-    logger.info(f"Constructed option symbol: {option_symbol}")
+    # 2. Expiry date conversion (from DDMMMYY like 16AUG24 to YYMMDD like 240816)
+    expiry = expiry_date
+    if len(expiry) == 7:  # e.g. 16AUG24
+        try:
+            dt = datetime.strptime(expiry, "%d%b%y")
+            expiry = dt.strftime("%y%m%d")
+        except Exception:
+            pass
+    elif len(expiry) == 9:  # e.g. 16-AUG-2024
+        try:
+            dt = datetime.strptime(expiry, "%d-%b-%Y")
+            expiry = dt.strftime("%y%m%d")
+        except Exception:
+            pass
+
+    # 3. Option type (CE -> C, PE -> P, C -> C, P -> P)
+    opt_type = option_type.upper()
+    if opt_type == "CE":
+        opt_type = "C"
+    elif opt_type == "PE":
+        opt_type = "P"
+
+    # 4. Strike price formatting (multiplied by 1000, padded to 8 chars)
+    strike_val = int(round(strike * 1000))
+    strike_str = f"{strike_val:08d}"
+
+    option_symbol = f"{root}{expiry}{opt_type}{strike_str}"
+    logger.info(f"Constructed option symbol in US OSI format: {option_symbol}")
     return option_symbol
 
 
@@ -604,24 +617,17 @@ def get_option_exchange(underlying_exchange: str) -> str:
     """
     underlying_exchange = underlying_exchange.upper()
 
-    if underlying_exchange in ["NSE", "NSE_INDEX"]:
+    if underlying_exchange in ["NASDAQ", "NYSE", "AMEX", "OTCQX"]:
+        return "NASDAQ"
+    elif underlying_exchange in ["NSE", "NSE_INDEX"]:
         return "NFO"
     elif underlying_exchange in ["BSE", "BSE_INDEX"]:
         return "BFO"
-    elif underlying_exchange == "MCX":
-        return "MCX"
-    elif underlying_exchange == "CDS":
-        return "CDS"
-    elif underlying_exchange in ("NCO", "BCD", "NCDEX"):
-        # NSE commodities, BSE currency and NCDEX also list their options on
-        # the same exchange. Falling through to the NFO default sent the strike
-        # lookup to the wrong segment, so the chain came back empty. See #1748.
-        return underlying_exchange
     elif underlying_exchange in CRYPTO_EXCHANGES:
         return underlying_exchange
     else:
-        logger.warning(f"Unknown exchange mapping for: {underlying_exchange}, defaulting to NFO")
-        return "NFO"
+        logger.warning(f"Unknown exchange mapping for: {underlying_exchange}, defaulting to NASDAQ")
+        return "NASDAQ"
 
 
 def get_option_symbol(

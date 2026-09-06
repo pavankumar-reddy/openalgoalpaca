@@ -53,7 +53,7 @@ def websocket_dashboard():
 @websocket_bp.route("/websocket/test")
 @check_session_validity
 def websocket_test():
-    """Render WebSocket test page for RELIANCE and TCS"""
+    """Render WebSocket test page for AAPL and MSFT"""
     return render_template("websocket/test_market_data.html")
 
 

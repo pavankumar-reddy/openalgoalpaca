@@ -321,7 +321,7 @@ class TelegramBotMigration:
                             daily_summary BOOLEAN DEFAULT 1,
                             summary_time VARCHAR(10) DEFAULT '18:00',
                             language VARCHAR(10) DEFAULT 'en',
-                            timezone VARCHAR(50) DEFAULT 'Asia/Kolkata',
+                            timezone VARCHAR(50) DEFAULT 'America/New_York',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (telegram_id) REFERENCES telegram_users(telegram_id)

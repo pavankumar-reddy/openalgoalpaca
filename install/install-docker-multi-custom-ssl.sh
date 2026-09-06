@@ -127,13 +127,13 @@ check_status "Package installation failed"
 # Host Timezone Check
 log "Checking Host Timezone..." "$YELLOW"
 CURRENT_TZ=$(timedatectl show --property=Timezone --value 2>/dev/null || cat /etc/timezone)
-if [[ "$CURRENT_TZ" != *"Asia/Kolkata"* ]]; then
-    log "Setting Host Timezone to Asia/Kolkata..." "$YELLOW"
-    timedatectl set-timezone Asia/Kolkata
+if [[ "$CURRENT_TZ" != *"America/New_York"* ]]; then
+    log "Setting Host Timezone to America/New_York..." "$YELLOW"
+    timedatectl set-timezone America/New_York
     check_status "Failed to set timezone"
-    log "Timezone set to Asia/Kolkata" "$GREEN"
+    log "Timezone set to America/New_York" "$GREEN"
 else
-    log "Host Timezone is already Asia/Kolkata." "$GREEN"
+    log "Host Timezone is already America/New_York." "$GREEN"
 fi
 
 # Install Docker
@@ -897,7 +897,7 @@ services:
       - FLASK_ENV=production
       - FLASK_DEBUG=0
       - APP_MODE=standalone
-      - TZ=Asia/Kolkata
+      - TZ=America/New_York
       # Resource limits auto-calculated for multi-instance deployment
       # See: https://github.com/marketcalls/openalgo/issues/822
       - OPENBLAS_NUM_THREADS=${THREAD_LIMIT}

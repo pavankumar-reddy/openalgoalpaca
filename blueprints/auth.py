@@ -1476,3 +1476,95 @@ def change_password_api():
     except Exception as e:
         logger.exception(f"Error changing password: {e}")
         return jsonify({"status": "error", "message": "Failed to change password"}), 500
+
+
+@auth_bp.route("/demo-login", methods=["GET", "POST"])
+def demo_login():
+    """Demo login: sets a demo user and performs broker auth for alpaca.
+
+    This endpoint is intended for local/demo usage only. It sets session['user']
+    to a non-privileged demo user and invokes the Alpaca broker authenticate
+    function (if present) with demo/demo credentials. On success it calls
+    handle_auth_success() to complete the normal post-auth steps.
+    """
+    try:
+        # Create an app-level demo user session
+        session["user"] = "demo"
+
+        # Attempt to call the broker auth function (lazy-loaded) if present
+        try:
+            auth_funcs = current_app.broker_auth_functions
+            auth_fn = auth_funcs.get("alpaca_auth")
+            if auth_fn:
+                # authenticate_broker may expect username/password — pass demo/demo
+                auth_token, error = auth_fn("demo", "demo")
+            else:
+                auth_token, error = ("demo-token", None)
+        except Exception:
+            auth_token, error = ("demo-token", None)
+
+        if error:
+            return jsonify({"status": "error", "message": f"Broker auth failed: {error}"}), 401
+
+        # handle_auth_success will set session['logged_in'] and upsert auth token in DB
+        from utils.auth_utils import handle_auth_success
+        return handle_auth_success(auth_token, session["user"], "alpaca")
+
+    except Exception as e:
+        logger.exception(f"Demo login failed: {e}")
+        return jsonify({"status": "error", "message": "Demo login failed"}), 500
+
+
+@auth_bp.route('/alpaca/setup', methods=['GET', 'POST'])
+def alpaca_setup():
+    """Collect Alpaca API Key/Secret and store them as the broker auth token for the demo user.
+
+    POST: expects form fields 'api_key' and 'api_secret'. Stores them via upsert_auth
+    as a JSON string under the current session user and broker='alpaca'. After
+    storing, redirects back to /dashboard.
+    """
+    from flask import render_template_string
+    try:
+        if 'user' not in session:
+            session['user'] = 'demo'
+            session['broker'] = 'alpaca'
+
+        username = session['user']
+
+        if session and session.get('broker') != 'alpaca':
+            session['broker'] = 'alpaca'
+
+        if request.method == 'POST':
+            api_key = request.form.get('api_key')
+            api_secret = request.form.get('api_secret')
+            if not api_key or not api_secret:
+                return jsonify({'status': 'error', 'message': 'Both api_key and api_secret are required'}), 400
+
+            import json
+            from database.auth_db import upsert_auth
+
+            # Store API credentials as JSON string in the auth token field (encrypted by upsert_auth)
+            token_payload = json.dumps({'api_key': api_key, 'api_secret': api_secret})
+            upsert_auth(username, token_payload, 'alpaca')
+
+            return redirect(url_for('dashboard_bp.dashboard'))
+
+        # GET: render a tiny HTML form (fallback if someone visits directly)
+        form_html = """
+        <!doctype html>
+        <html>
+        <head><title>Alpaca Setup</title></head>
+        <body>
+        <h2>Enter Alpaca API credentials</h2>
+        <form method="post">
+          <label>API Key: <input name="api_key" type="text" required></label><br/>
+          <label>API Secret: <input name="api_secret" type="password" required></label><br/>
+          <button type="submit">Save and continue</button>
+        </form>
+        </body>
+        </html>
+        """
+        return render_template_string(form_html)
+    except Exception as e:
+        logger.exception(f"Error in alpaca_setup: {e}")
+        return jsonify({'status': 'error', 'message': 'Internal error'}), 500

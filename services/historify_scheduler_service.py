@@ -176,7 +176,7 @@ class HistorifyScheduler:
                 try:
                     hour, minute = map(int, time_str.split(":"))
                     # Use IST timezone explicitly for Indian markets
-                    trigger = CronTrigger(hour=hour, minute=minute, timezone="Asia/Kolkata")
+                    trigger = CronTrigger(hour=hour, minute=minute, timezone="America/New_York")
                     logger.debug(f"Creating daily trigger at {time_str} IST")
                 except ValueError as e:
                     logger.error(f"Invalid time format: {time_str} - {e}")

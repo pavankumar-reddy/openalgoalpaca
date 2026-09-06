@@ -4,61 +4,51 @@ Reference: https://docs.openalgo.in/api-documentation/v1/order-constants
 """
 
 # Exchange Types
-EXCHANGE_NSE = "NSE"  # NSE Equity
-EXCHANGE_NFO = "NFO"  # NSE Futures & Options
-EXCHANGE_CDS = "CDS"  # NSE Currency
-EXCHANGE_BSE = "BSE"  # BSE Equity
-EXCHANGE_BFO = "BFO"  # BSE Futures & Options
-EXCHANGE_BCD = "BCD"  # BSE Currency
-EXCHANGE_MCX = "MCX"  # MCX Commodity
-EXCHANGE_NCDEX = "NCDEX"  # NCDEX Commodity
-EXCHANGE_NCO = "NCO"  # NSE Commodities (futures + options)
-EXCHANGE_NSE_INDEX = "NSE_INDEX"  # NSE Index
-EXCHANGE_BSE_INDEX = "BSE_INDEX"  # BSE Index
-EXCHANGE_MCX_INDEX = "MCX_INDEX"  # MCX Index (declared by Angel + Zerodha plugins)
-EXCHANGE_GLOBAL_INDEX = "GLOBAL_INDEX"  # Global indices (US30, JAPAN225, HANGSENG, GIFTNIFTY, etc.)
-EXCHANGE_CRYPTO = "CRYPTO"  # Crypto Exchanges (broker-agnostic; brexchange carries broker name)
+# US stock-market defaults. The legacy India names are retained as aliases so older
+# code paths continue to resolve during migration without redefining every caller.
+EXCHANGE_NASDAQ = "NASDAQ"  # US Nasdaq equity market
+EXCHANGE_NYSE = "NYSE"      # US New York Stock Exchange
+EXCHANGE_AMEX = "AMEX"      # US American Stock Exchange
+EXCHANGE_OTCQX = "OTCQX"    # OTC markets
+EXCHANGE_NSE = EXCHANGE_NASDAQ
+EXCHANGE_NFO = EXCHANGE_NASDAQ
+EXCHANGE_CDS = EXCHANGE_NASDAQ
+EXCHANGE_BSE = EXCHANGE_NYSE
+EXCHANGE_BFO = EXCHANGE_AMEX
+EXCHANGE_BCD = EXCHANGE_AMEX
+EXCHANGE_MCX = EXCHANGE_NASDAQ
+EXCHANGE_NCDEX = EXCHANGE_NASDAQ
+EXCHANGE_NCO = EXCHANGE_NASDAQ
+EXCHANGE_NSE_INDEX = "NASDAQ_INDEX"
+EXCHANGE_BSE_INDEX = "NYSE_INDEX"
+EXCHANGE_MCX_INDEX = "AMEX_INDEX"
+EXCHANGE_GLOBAL_INDEX = "US_INDEX"
+EXCHANGE_CRYPTO = "CRYPTO"  # Kept for compatibility with crypto-only brokers.
 
 # Set of all crypto-family exchanges.
-# Use `exchange in CRYPTO_EXCHANGES` instead of `exchange == "CRYPTO"` so that
-# onboarding a second crypto exchange (e.g. BINANCE, BYBIT) is a one-line change here.
 CRYPTO_EXCHANGES: set[str] = {EXCHANGE_CRYPTO}
 
 # Set of broker names that map to crypto exchanges.
-# Used to select the correct download cutoff timezone (UTC vs IST).
-# Add new crypto brokers here — the smart download logic picks this up automatically.
 CRYPTO_BROKERS: set[str] = {"deltaexchange"}
 
 # Instrument type for crypto perpetual futures (used in symbol DB queries).
 INSTRUMENT_PERPFUT: str = "PERPFUT"
 
 # Default quote-currency suffix for crypto perpetual instruments.
-# e.g. BTCUSDT = BTC + CRYPTO_QUOTE_CURRENCY — update here if/when USDC or INR is added.
 CRYPTO_QUOTE_CURRENCY: str = "USDT"
 
-# Set of all derivative-capable exchanges (FNO + Crypto).
-# Use `exchange in FNO_EXCHANGES` instead of maintaining local sets in each service.
-# Adding a new exchange family is a one-line change here.
-FNO_EXCHANGES: set[str] = {
-    EXCHANGE_NFO,
-    EXCHANGE_BFO,
-    EXCHANGE_MCX,
-    EXCHANGE_CDS,
-    EXCHANGE_BCD,
-    EXCHANGE_NCDEX,
-    EXCHANGE_NCO,
-} | CRYPTO_EXCHANGES
+# US-market equity exchanges typically used by the frontend and default broker metadata.
+US_EQUITY_EXCHANGES: set[str] = {EXCHANGE_NASDAQ, EXCHANGE_NYSE, EXCHANGE_AMEX, EXCHANGE_OTCQX}
+
+# Set of all derivative-capable exchanges (kept for compatibility; US stock flow now
+# primarily uses the US equity list above).
+FNO_EXCHANGES: set[str] = US_EQUITY_EXCHANGES | CRYPTO_EXCHANGES
 
 VALID_EXCHANGES = [
-    EXCHANGE_NSE,
-    EXCHANGE_NFO,
-    EXCHANGE_CDS,
-    EXCHANGE_BSE,
-    EXCHANGE_BFO,
-    EXCHANGE_BCD,
-    EXCHANGE_MCX,
-    EXCHANGE_NCDEX,
-    EXCHANGE_NCO,
+    EXCHANGE_NASDAQ,
+    EXCHANGE_NYSE,
+    EXCHANGE_AMEX,
+    EXCHANGE_OTCQX,
     EXCHANGE_NSE_INDEX,
     EXCHANGE_BSE_INDEX,
     EXCHANGE_MCX_INDEX,
@@ -89,15 +79,10 @@ VALID_ACTIONS = [ACTION_BUY, ACTION_SELL]
 
 # Exchange Badge Colors (for UI)
 EXCHANGE_BADGE_COLORS = {
-    EXCHANGE_NSE: "badge-accent",
-    EXCHANGE_NFO: "badge-secondary",
-    EXCHANGE_CDS: "badge-info",
-    EXCHANGE_BSE: "badge-neutral",
-    EXCHANGE_BFO: "badge-warning",
-    EXCHANGE_BCD: "badge-error",
-    EXCHANGE_MCX: "badge-primary",
-    EXCHANGE_NCDEX: "badge-success",
-    EXCHANGE_NCO: "badge-success",
+    EXCHANGE_NASDAQ: "badge-accent",
+    EXCHANGE_NYSE: "badge-neutral",
+    EXCHANGE_AMEX: "badge-warning",
+    EXCHANGE_OTCQX: "badge-info",
     EXCHANGE_NSE_INDEX: "badge-accent",
     EXCHANGE_BSE_INDEX: "badge-neutral",
     EXCHANGE_MCX_INDEX: "badge-primary",
@@ -145,7 +130,7 @@ REQUIRED_MODIFY_ORDER_FIELDS = [
 ]
 
 # Default Values for Optional Fields
-DEFAULT_PRODUCT_TYPE = PRODUCT_MIS
+DEFAULT_PRODUCT_TYPE = PRODUCT_CNC
 DEFAULT_PRICE_TYPE = PRICE_TYPE_MARKET
 DEFAULT_PRICE = "0"
 DEFAULT_TRIGGER_PRICE = "0"

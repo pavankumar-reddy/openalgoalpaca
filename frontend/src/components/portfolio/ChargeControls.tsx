@@ -16,8 +16,8 @@ import { cn } from '@/lib/utils'
 interface Props {
   value: ChargeState
   onChange(next: ChargeState): void
-  exchange: 'NSE' | 'BSE'
-  onExchange(v: 'NSE' | 'BSE'): void
+  exchange: string
+  onExchange(v: string): void
 }
 
 export function ChargeControls({ value, onChange, exchange, onExchange }: Props) {
@@ -41,7 +41,7 @@ export function ChargeControls({ value, onChange, exchange, onExchange }: Props)
       <div>
         <Label className="text-[11px]">Exchange</Label>
         <div className="mt-1 flex gap-1">
-          {(['NSE', 'BSE'] as const).map((ex) => (
+          {['NSE', 'BSE', 'NASDAQ'].map((ex) => (
             <button
               key={ex}
               type="button"
@@ -49,7 +49,7 @@ export function ChargeControls({ value, onChange, exchange, onExchange }: Props)
                 onExchange(ex)
                 // The transaction fee differs by venue; move it with the choice
                 // rather than leaving a stale NSE rate against BSE.
-                set('exchangeTxn', ex === 'BSE' ? 0.00375 : 0.00307)
+                set('exchangeTxn', ex === 'BSE' ? 0.00375 : ex === 'NSE' ? 0.00307 : 0.0)
               }}
               className={cn(
                 'flex-1 rounded border px-2 py-1 text-xs transition-colors',

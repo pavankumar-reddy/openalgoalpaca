@@ -4,7 +4,7 @@ Square-Off Manager Thread
 
 Manages the square-off manager as a separate daemon thread using APScheduler that:
 - Runs scheduled jobs at configured square-off times for each exchange
-- Uses IST (Asia/Kolkata) timezone for all scheduling
+- Uses IST (America/New_York) timezone for all scheduling
 - Cancels pending MIS orders at square-off time
 - Closes open MIS positions at square-off time
 - Reads all configuration from sandbox database config
@@ -33,7 +33,7 @@ _scheduler = None
 _scheduler_lock = threading.Lock()
 
 # IST timezone
-IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("America/New_York")
 
 
 def _schedule_square_off_jobs(scheduler):

@@ -107,7 +107,7 @@ export const chartinkApi = {
   /**
    * Search symbols (limited to NSE/BSE)
    */
-  searchSymbols: async (query: string, exchange?: 'NSE' | 'BSE'): Promise<SymbolSearchResult[]> => {
+  searchSymbols: async (query: string, exchange?: string): Promise<SymbolSearchResult[]> => {
     const params = new URLSearchParams({ q: query })
     if (exchange) {
       params.append('exchange', exchange)

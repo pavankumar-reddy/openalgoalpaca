@@ -12,7 +12,7 @@ describe('useSupportedExchanges derivative coverage', () => {
     useBrokerStore.setState({
       capabilities: {
         broker_name: 'test',
-        broker_type: 'IN_stock',
+        broker_type: 'US_stock',
         supported_exchanges: ['NSE', 'NFO', 'CDS', 'BCD', 'NCDEX'],
         leverage_config: false,
       },
@@ -33,7 +33,7 @@ describe('useSupportedExchanges derivative coverage', () => {
     useBrokerStore.setState({
       capabilities: {
         broker_name: 'test',
-        broker_type: 'IN_stock',
+        broker_type: 'US_stock',
         supported_exchanges: ['NSE', 'NFO', 'BCD'],
         leverage_config: false,
       },

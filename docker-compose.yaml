@@ -23,7 +23,7 @@ services:
     environment:
       - FLASK_ENV=${FLASK_ENV:-production}
       - FLASK_DEBUG=${FLASK_DEBUG:-0}
-      - TZ=Asia/Kolkata
+      - TZ=America/New_York
       # Limit OpenBLAS/NumPy threads to prevent RLIMIT_NPROC exhaustion
       # See: https://github.com/marketcalls/openalgo/issues/822
       - OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS:-2}

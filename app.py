@@ -56,8 +56,7 @@ from blueprints.brlogin import brlogin_bp
 from blueprints.broker_credentials import (
     broker_credentials_bp,  # Import the broker credentials blueprint
 )
-from blueprints.chart_test import chart_test_bp  # Standalone chart test page (dev/testing only)
-from blueprints.chartink import chartink_bp  # Import the chartink blueprint
+from blueprints.ai_agent import ai_agent_bp  # Import the AI Agent blueprint
 from blueprints.core import core_bp
 from blueprints.custom_straddle import custom_straddle_bp  # Import custom straddle blueprint
 from blueprints.dashboard import dashboard_bp
@@ -115,7 +114,6 @@ from database.analyzer_db import init_db as ensure_analyzer_tables_exists
 from database.apilog_db import init_db as ensure_api_log_tables_exists
 from database.apscheduler_jobstore_db import ensure_jobstore_tables_exist
 from database.auth_db import init_db as ensure_auth_tables_exists
-from database.chartink_db import init_db as ensure_chartink_tables_exists
 from database.flow_db import init_db as ensure_flow_tables_exists
 from database.historify_db import init_database as ensure_historify_tables_exists
 from database.latency_db import init_latency_db as ensure_latency_tables_exists
@@ -261,15 +259,22 @@ def create_app():
         app.config["WTF_CSRF_TIME_LIMIT"] = None  # No time limit if empty
 
     # Register RESTx API blueprint first
-    # Register React frontend blueprint FIRST for migrated routes
-    # Register React frontend routes
+    # Register auth blueprint before the React frontend so API/auth endpoints are not shadowed by the SPA catch-all
+    app.register_blueprint(auth_bp)
+
+    # Register the dashboard blueprint BEFORE the React frontend so server-side /dashboard
+    # routes are handled by Flask and not shadowed by the SPA catch-all.
+    app.register_blueprint(dashboard_bp)
+
+    app.register_blueprint(api_v1_bp)
+    app.register_blueprint(ai_agent_bp)
+
+    # Register React frontend blueprint (serves the SPA)
     if is_react_frontend_available():
         app.register_blueprint(react_bp)
         logger.debug("React frontend enabled (frontend/dist found)")
     else:
         logger.warning("React frontend not available - run 'npm run build' in frontend/")
-
-    app.register_blueprint(api_v1_bp)
 
     # Pull openstatz in on a background thread. It costs about 1.4s, almost all
     # of it matplotlib and seaborn behind its plotting module, which the
@@ -287,10 +292,6 @@ def create_app():
 
     # Initialize traffic logging middleware after security
     init_traffic_logging(app)
-
-    # Register other blueprints
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(dashboard_bp)
     app.register_blueprint(orders_bp)
     app.register_blueprint(search_bp)
     app.register_blueprint(api_key_bp)
@@ -302,7 +303,6 @@ def create_app():
     app.register_blueprint(core_bp)
     app.register_blueprint(analyzer_bp)
     app.register_blueprint(settings_bp)
-    app.register_blueprint(chartink_bp)
     app.register_blueprint(traffic_bp)
     app.register_blueprint(latency_bp)
     app.register_blueprint(leverage_bp)  # Register Leverage blueprint
@@ -310,7 +310,6 @@ def create_app():
     app.register_blueprint(strategy_bp)
     app.register_blueprint(master_contract_status_bp)
     app.register_blueprint(websocket_bp)  # Register WebSocket example blueprint
-    app.register_blueprint(chart_test_bp)  # Register standalone chart test page (dev/testing only)
     app.register_blueprint(pnltracker_bp)  # Register PnL tracker blueprint
     app.register_blueprint(python_strategy_bp)  # Register Python strategy blueprint
     app.register_blueprint(telegram_bp)  # Register Telegram blueprint
@@ -425,8 +424,8 @@ def create_app():
     # Exempt webhook endpoints from CSRF protection after app initialization
     with app.app_context():
         # Exempt webhook endpoints from CSRF protection
-        csrf.exempt(app.view_functions["chartink_bp.webhook"])
         csrf.exempt(app.view_functions["strategy_bp.webhook"])
+        csrf.exempt(ai_agent_bp)
         # Broker postbacks are machine-to-machine POSTs — brokers cannot carry
         # a CSRF token; validation is per-broker (active-session match +
         # Zerodha checksum) inside blueprints/postback.py.
@@ -436,6 +435,7 @@ def create_app():
 
         # Exempt broker callback endpoints from CSRF protection (OAuth callbacks from external providers)
         csrf.exempt(app.view_functions["brlogin.broker_callback"])
+        csrf.exempt(app.view_functions["auth.alpaca_setup"])
 
         # auth.logout is deliberately NOT exempt. It is not "safe" in the CSRF
         # sense: it revokes the broker token, publishes CACHE_INVALIDATE_ALL
@@ -696,7 +696,6 @@ def setup_environment(app):
                 ("API Log DB", ensure_api_log_tables_exists),
                 ("Analyzer DB", ensure_analyzer_tables_exists),
                 ("Settings DB", ensure_settings_tables_exists),
-                ("Chartink DB", ensure_chartink_tables_exists),
                 ("Traffic Logs DB", ensure_traffic_logs_exists),
                 ("Latency DB", ensure_latency_tables_exists),
                 ("Strategy DB", ensure_strategy_tables_exists),

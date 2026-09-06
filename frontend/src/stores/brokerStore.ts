@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 interface BrokerCapabilities {
   broker_name: string
-  broker_type: 'IN_stock' | 'crypto'
+  broker_type: 'US_stock' | 'crypto'
   supported_exchanges: string[]
   leverage_config: boolean
 }

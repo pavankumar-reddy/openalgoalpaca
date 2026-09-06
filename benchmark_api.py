@@ -26,12 +26,12 @@ client = httpx.Client(timeout=30.0)
 
 ENDPOINTS = {
     "intervals":   {},
-    "quotes":      {"symbol": "RELIANCE", "exchange": "NSE"},
-    "history":     {"symbol": "RELIANCE", "exchange": "NSE", "interval": "5m",
+    "quotes":      {"symbol": "AAPL", "exchange": "NASDAQ"},
+    "history":     {"symbol": "AAPL", "exchange": "NASDAQ", "interval": "5m",
                     "start_date": start_5d, "end_date": end_today},
-    "multiquotes": {"symbols": [{"symbol": "RELIANCE", "exchange": "NSE"},
-                                {"symbol": "TCS", "exchange": "NSE"},
-                                {"symbol": "INFY", "exchange": "NSE"}]},
+    "multiquotes": {"symbols": [{"symbol": "AAPL", "exchange": "NASDAQ"},
+                                {"symbol": "MSFT", "exchange": "NASDAQ"},
+                                {"symbol": "GOOGL", "exchange": "NASDAQ"}]},
 }
 
 

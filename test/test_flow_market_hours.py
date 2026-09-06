@@ -21,7 +21,7 @@ from services.flow_scheduler_service import (
     is_within_market_hours,
 )
 
-IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("America/New_York")
 # Patched at its source: is_within_market_hours imports it inside the call, so
 # there is no module-level name on the scheduler to replace.
 CAL = "database.market_calendar_db.get_effective_session_window"

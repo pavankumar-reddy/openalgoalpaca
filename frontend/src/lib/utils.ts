@@ -29,9 +29,9 @@ export function sanitizeCSV(value: string | number | null | undefined): string {
  * - all other brokers  → INR (₹)
  */
 export function makeFormatCurrency(broker?: string | null): (value: number) => string {
-  const isUSD = broker === 'deltaexchange'
+  const isINR = broker === 'zerodha' || broker === 'angel'
   return (value: number) =>
-    isUSD
+    !isINR
       ? new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD',

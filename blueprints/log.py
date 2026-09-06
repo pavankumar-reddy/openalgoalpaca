@@ -79,7 +79,7 @@ def format_log_entry(log, ist):
 
 def get_filtered_logs(start_date=None, end_date=None, search_query=None, page=None, per_page=None):
     """Get filtered logs with pagination"""
-    ist = pytz.timezone("Asia/Kolkata")
+    ist = pytz.timezone("America/New_York")
     query = OrderLog.query
 
     try:

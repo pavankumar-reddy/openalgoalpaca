@@ -26,7 +26,7 @@ describe('SymbolSearchDialog', () => {
     useBrokerStore.setState({
       capabilities: {
         broker_name: 'test',
-        broker_type: 'IN_stock',
+        broker_type: 'US_stock',
         supported_exchanges: ['NSE', 'BSE', 'NFO', 'NSE_INDEX', 'BSE_INDEX'],
         leverage_config: false,
       },

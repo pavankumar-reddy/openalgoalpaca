@@ -340,12 +340,11 @@ export default function TradeBook() {
                     Exchange
                   </Label>
                   <div className="flex flex-wrap gap-2">
-                    <FilterChip type="exchange" value="NSE" label="NSE" />
-                    <FilterChip type="exchange" value="BSE" label="BSE" />
-                    <FilterChip type="exchange" value="NFO" label="NFO" />
-                    <FilterChip type="exchange" value="BFO" label="BFO" />
-                    <FilterChip type="exchange" value="MCX" label="MCX" />
-                    <FilterChip type="exchange" value="CDS" label="CDS" />
+                    <FilterChip type="exchange" value="NASDAQ" label="NASDAQ" />
+                    <FilterChip type="exchange" value="NYSE" label="NYSE" />
+                    <FilterChip type="exchange" value="AMEX" label="AMEX" />
+                    <FilterChip type="exchange" value="OTCQX" label="OTCQX" />
+                    <FilterChip type="exchange" value="BATS" label="BATS" />
                   </div>
                 </div>
 

@@ -102,7 +102,7 @@ def _convert_timestamp_to_ist(df):
     Convert timestamp column in a history DataFrame to IST datetime index.
     Returns the dataframe with 'datetime' index in IST, or None on failure.
     """
-    ist = pytz.timezone("Asia/Kolkata")
+    ist = pytz.timezone("America/New_York")
 
     try:
         if "timestamp" not in df.columns:
@@ -169,7 +169,7 @@ def get_iv_chart_data(
         )
 
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         # Generous calendar window; the returned IV series is post-filtered
         # to the last N distinct trading dates that actually have data.
         start_date_str, end_date_str = _resolve_trading_window(days, ist)

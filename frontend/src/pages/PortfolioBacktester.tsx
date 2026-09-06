@@ -53,16 +53,16 @@ export default function PortfolioBacktester() {
   const setBacktestResult = usePortfolioBacktestStore((s) => s.setResult)
 
   const [holdings, setHoldings] = useState<PortfolioHolding[]>([
-    { symbol: 'NIFTYBEES', exchange: 'NSE', weight: 60 },
-    { symbol: 'GOLDBEES', exchange: 'NSE', weight: 40 },
+    { symbol: 'SPY', exchange: 'AMEX', weight: 60 },
+    { symbol: 'GLD', exchange: 'NYSE', weight: 40 },
   ])
-  const [benchmark, setBenchmark] = useState('NIFTY')
+  const [benchmark, setBenchmark] = useState('SPY')
   const [rebalance, setRebalance] = useState<RebalanceRule>('never')
   const [source, setSource] = useState<PriceSource>('api')
   const [startDate, setStartDate] = useState(todayISO(5))
   const [endDate, setEndDate] = useState(todayISO(0))
   const [charges, setCharges] = useState<ChargeState>(DEFAULT_CHARGES)
-  const [costExchange, setCostExchange] = useState<'NSE' | 'BSE'>('NSE')
+  const [costExchange, setCostExchange] = useState<string>('NASDAQ')
   const [riskFree, setRiskFree] = useState(0)
 
   const [busy, setBusy] = useState(false)

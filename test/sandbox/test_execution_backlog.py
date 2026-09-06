@@ -28,7 +28,7 @@ import pytz
 from database.sandbox_db import SandboxOrders, db_session
 from sandbox.execution_engine import ExecutionEngine
 
-IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("America/New_York")
 STRATEGY = "backlog-regression"
 
 #: Generous enough to absorb a slow CI box, far below the old cost at this depth

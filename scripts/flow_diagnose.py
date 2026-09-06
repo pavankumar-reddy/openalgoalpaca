@@ -55,7 +55,7 @@ def diagnose(workflow_id: int) -> int:
     # nodes compare against the server's local clock, so a host that is not on
     # IST evaluates every window in the wrong timezone.
     local = datetime.now()
-    ist = datetime.now(pytz.timezone("Asia/Kolkata"))
+    ist = datetime.now(pytz.timezone("America/New_York"))
     skew = round(
         (local.replace(tzinfo=None) - ist.replace(tzinfo=None)).total_seconds() / 60
     )
@@ -66,7 +66,7 @@ def diagnose(workflow_id: int) -> int:
         blockers.append(
             f"Server timezone is not IST ({skew:+d} min). timeWindow nodes use the "
             "server's local clock, so IST windows are compared against the wrong "
-            "time. Set TZ=Asia/Kolkata (the official Docker image already does)."
+            "time. Set TZ=America/New_York (the official Docker image already does)."
         )
     else:
         print("  timezone          : IST, correct")

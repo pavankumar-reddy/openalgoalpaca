@@ -13,44 +13,12 @@ import {
 } from '@/components/ui/select'
 import { useAuthStore } from '@/stores/authStore'
 
-// All supported brokers with their display names and auth types
+// All supported US brokers with their display names and auth types
 const allBrokers = [
-  { id: 'fivepaisa', name: '5 Paisa', authType: 'totp' },
-  { id: 'fivepaisaxts', name: '5 Paisa (XTS)', authType: 'totp' },
-  { id: 'aliceblue', name: 'Alice Blue', authType: 'totp' },
-  { id: 'angel', name: 'Angel One', authType: 'totp' },
-  { id: 'arrow', name: 'Arrow', authType: 'oauth' },
-  { id: 'compositedge', name: 'CompositEdge', authType: 'oauth' },
-  { id: 'dhan', name: 'Dhan', authType: 'oauth' },
-  { id: 'deltaexchange', name: 'Delta Exchange', authType: 'totp' },
-  { id: 'indmoney', name: 'IndMoney', authType: 'totp' },
-  { id: 'dhan_sandbox', name: 'Dhan (Sandbox)', authType: 'totp' },
-  { id: 'definedge', name: 'Definedge', authType: 'totp' },
-  { id: 'firstock', name: 'Firstock', authType: 'totp' },
-  { id: 'flattrade', name: 'Flattrade', authType: 'oauth' },
-  { id: 'motilal', name: 'Motilal Oswal', authType: 'totp' },
-  { id: 'fyers', name: 'Fyers', authType: 'oauth' },
-  { id: 'groww', name: 'Groww', authType: 'totp' },
-  { id: 'hdfcsecurities', name: 'HDFC Securities', authType: 'oauth' },
-  { id: 'hdfcsky', name: 'HDFC Sky', authType: 'oauth' },
-  { id: 'ibulls', name: 'Ibulls', authType: 'totp' },
-  { id: 'iifl', name: 'IIFL', authType: 'totp' },
-  { id: 'iiflcapital', name: 'IIFL Capital', authType: 'oauth' },
-  { id: 'jainamxts', name: 'JainamXts', authType: 'totp' },
-  { id: 'kotak', name: 'Kotak Securities', authType: 'totp' },
-  { id: 'mstock', name: 'mStock by Mirae Asset', authType: 'totp' },
-  { id: 'nubra', name: 'Nubra', authType: 'totp' },
-  { id: 'paytm', name: 'Paytm Money', authType: 'oauth' },
-  { id: 'pocketful', name: 'Pocketful', authType: 'oauth' },
-  { id: 'rmoney', name: 'RMoney', authType: 'oauth' },
-  { id: 'samco', name: 'Samco', authType: 'totp' },
-  { id: 'shoonya', name: 'Shoonya', authType: 'totp' },
-  { id: 'tradejini', name: 'Tradejini', authType: 'totp' },
-  { id: 'tradesmart', name: 'TradeSmart', authType: 'oauth' },
-  { id: 'upstox', name: 'Upstox', authType: 'oauth' },
-  { id: 'wisdom', name: 'Wisdom Capital', authType: 'totp' },
-  { id: 'zebu', name: 'Zebu', authType: 'totp' },
-  { id: 'zerodha', name: 'Zerodha', authType: 'oauth' },
+  { id: 'alpaca', name: 'Alpaca', authType: 'totp' },
+  { id: 'ibkr', name: 'Interactive Brokers (IBKR)', authType: 'totp' },
+  { id: 'robinhood', name: 'Robinhood', authType: 'totp' },
+  { id: 'tradier', name: 'Tradier', authType: 'totp' },
 ] as const
 
 interface BrokerConfig {
@@ -131,6 +99,9 @@ export default function BrokerSelect() {
 
     // Build login URL based on broker type (matching original broker.html logic)
     switch (selectedBroker) {
+      case 'alpaca':
+      case 'ibkr':
+      case 'robinhood':
       case 'fivepaisa':
       case 'fivepaisaxts':
       case 'aliceblue':

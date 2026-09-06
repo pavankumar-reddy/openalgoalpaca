@@ -81,7 +81,7 @@ def format_request(req, ist):
 def get_recent_requests():
     """Get recent analyzer requests"""
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         recent = AnalyzerLog.query.order_by(AnalyzerLog.created_at.desc()).limit(100).all()
         requests = []
 
@@ -99,7 +99,7 @@ def get_recent_requests():
 def get_filtered_requests(start_date=None, end_date=None):
     """Get analyzer requests with date filtering"""
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         query = AnalyzerLog.query
 
         # Apply date filters if provided

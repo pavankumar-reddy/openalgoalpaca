@@ -75,7 +75,7 @@ check_timezone() {
     current_tz=$(timedatectl | grep "Time zone" | awk '{print $3}')
     log_message "Current timezone: $current_tz" "$BLUE"
 
-    if [[ "$current_tz" == "Asia/Kolkata" ]]; then
+    if [[ "$current_tz" == "America/New_York" ]]; then
         log_message "Server is already set to IST timezone." "$GREEN"
         return 0
     fi
@@ -84,7 +84,7 @@ check_timezone() {
     read -p "Would you like to change the timezone to IST? (y/n): " change_tz
     if [[ $change_tz =~ ^[Yy]$ ]]; then
         log_message "Changing timezone to IST..." "$BLUE"
-        sudo timedatectl set-timezone Asia/Kolkata
+        sudo timedatectl set-timezone America/New_York
         check_status "Failed to change timezone"
         log_message "Timezone successfully changed to IST" "$GREEN"
     else

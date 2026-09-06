@@ -69,7 +69,7 @@ def _convert_timestamp_to_ist(df):
     Convert timestamp column in a history DataFrame to IST datetime index.
     Returns the dataframe with 'datetime' index in IST, or None on failure.
     """
-    ist = pytz.timezone("Asia/Kolkata")
+    ist = pytz.timezone("America/New_York")
 
     try:
         if "timestamp" not in df.columns:
@@ -128,7 +128,7 @@ def get_straddle_chart_data(
         Tuple of (success, response_dict, status_code)
     """
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         # Generous calendar window; the returned series is post-filtered to
         # the last N distinct trading dates that actually have data. Works
         # even at 02:16 IST when today has no candles yet.
@@ -368,7 +368,7 @@ def _calculate_days_to_expiry(expiry_date_str):
         Number of calendar days to expiry, or 0 if expired/parse error
     """
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         now = datetime.now(ist)
         expiry_dt = datetime.strptime(expiry_date_str.upper(), "%d%b%y")
         # Set expiry to 15:30 IST (market close)

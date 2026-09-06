@@ -88,6 +88,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { showToast } from '@/utils/toast'
 
 function optionExchangeFor(exchange: string): string {
+  if (exchange === 'NASDAQ' || exchange === 'NYSE' || exchange === 'AMEX' || exchange === 'OTCQX') return 'NASDAQ'
   if (exchange === 'NFO' || exchange === 'NSE_INDEX') return 'NFO'
   if (exchange === 'BFO' || exchange === 'BSE_INDEX') return 'BFO'
   return exchange
@@ -96,8 +97,10 @@ function optionExchangeFor(exchange: string): string {
 function underlyingExchangeFor(exchange: string, symbol: string): string {
   const INDEXES_NSE = new Set(['NIFTY', 'BANKNIFTY', 'FINNIFTY', 'MIDCPNIFTY', 'NIFTYNXT50'])
   const INDEXES_BSE = new Set(['SENSEX', 'BANKEX', 'SENSEX50'])
+  const INDEXES_US = new Set(['SPY', 'QQQ', 'DIA'])
   if (INDEXES_NSE.has(symbol)) return 'NSE_INDEX'
   if (INDEXES_BSE.has(symbol)) return 'BSE_INDEX'
+  if (INDEXES_US.has(symbol)) return 'AMEX'
   return exchange
 }
 

@@ -12,16 +12,54 @@ dashboard_bp = Blueprint("dashboard_bp", __name__, url_prefix="/")
 scalper_process = None
 
 
+@dashboard_bp.route("/")
+def root_redirect():
+    """Redirect root requests to the server-side dashboard route."""
+    return redirect(url_for("dashboard_bp.dashboard"))
+
+
 @dashboard_bp.route("/dashboard")
-@check_session_validity
 def dashboard():
-    login_username = session["user"]
+    """
+    Dashboard route modified for development: bypasses the login flow and
+    shows a prompt to enter Alpaca API credentials when no broker auth exists.
+
+    Behavior:
+    - If no session user exists, create a local demo user and default broker to 'alpaca'.
+    - If an auth token exists in the DB for the user, proceed to fetch funds as before.
+    - If no auth token exists, render a lightweight HTML form asking for Alpaca API Key/Secret.
+    """
+    # Ensure a user exists in session for local/dev flows
+    if "user" not in session:
+        session["user"] = "demo"
+        session["broker"] = "alpaca"
+
+    login_username = session.get("user")
+
+    # Try to fetch stored auth token (may be JSON containing key/secret)
     AUTH_TOKEN = get_auth_token(login_username)
 
-    if AUTH_TOKEN is None:
-        logger.warning(f"No auth token found for user {login_username}")
-        return redirect(url_for("auth.logout"))
+    # If no auth token, render a simple form to collect Alpaca API details
+    if not AUTH_TOKEN:
+        from flask import render_template_string
 
+        form_html = """
+        <!doctype html>
+        <html>
+        <head><title>Alpaca Setup</title></head>
+        <body>
+        <h2>Enter Alpaca API credentials</h2>
+        <form method="post" action="/auth/alpaca/setup">
+          <label>API Key: <input name="api_key" type="text" required></label><br/>
+          <label>API Secret: <input name="api_secret" type="password" required></label><br/>
+          <button type="submit">Save and continue</button>
+        </form>
+        </body>
+        </html>
+        """
+        return render_template_string(form_html)
+
+    # Existing flow: use stored auth token to fetch funds
     broker = session.get("broker")
     if not broker:
         logger.error("Broker not set in session")
@@ -34,8 +72,11 @@ def dashboard():
         if api_key:
             success, response, status_code = get_funds(api_key=api_key)
         else:
-            logger.error("No API key found for analyze mode")
-            return "API key required for analyze mode", 400
+            # No TradingView API key configured. If we have a stored broker auth
+            # (Alpaca) allow a fallback to the live-broker funds call using the
+            # stored auth token so the dashboard can proceed.
+            logger.info("No TradingView API key found for analyze mode — falling back to broker auth token if available")
+            success, response, status_code = get_funds(auth_token=AUTH_TOKEN, broker=broker)
     else:
         # Use live broker
         success, response, status_code = get_funds(auth_token=AUTH_TOKEN, broker=broker)
@@ -61,8 +102,7 @@ def dashboard():
         and margin_data.get("collateral") == "0.00"
         and margin_data.get("utiliseddebits") == "0.00"
     ):
-        # This could be service hours or authentication issue
-        # The service already logs the appropriate message
         logger.debug(f"All margin data values are zero for user {login_username}")
 
-    return render_template("dashboard.html", margin_data=margin_data)
+    from blueprints.react_app import serve_react_app
+    return serve_react_app()

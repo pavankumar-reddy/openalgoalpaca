@@ -57,7 +57,7 @@ strategy_bp = Blueprint("strategy_bp", __name__, url_prefix="/strategy")
 
 # Initialize scheduler for time-based controls
 scheduler = BackgroundScheduler(
-    timezone=pytz.timezone("Asia/Kolkata"),
+    timezone=pytz.timezone("America/New_York"),
     job_defaults={"coalesce": True, "misfire_grace_time": 300, "max_instances": 1},
 )
 scheduler.start()
@@ -283,7 +283,7 @@ def schedule_squareoff(strategy_id):
             minute=minutes,
             args=[strategy_id],
             id=job_id,
-            timezone=pytz.timezone("Asia/Kolkata"),
+            timezone=pytz.timezone("America/New_York"),
         )
         logger.info(f"Scheduled squareoff for strategy {strategy_id} at {hours}:{minutes}")
     except Exception as e:
@@ -880,7 +880,7 @@ def webhook(webhook_id):
 
         # Check trading hours for intraday strategies
         if strategy.is_intraday:
-            now = datetime.now(pytz.timezone("Asia/Kolkata"))
+            now = datetime.now(pytz.timezone("America/New_York"))
             current_time = now.strftime("%H:%M")
 
             # Determine if this is an entry or exit order

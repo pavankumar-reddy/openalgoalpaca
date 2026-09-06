@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils'
 
 interface Props {
   value: string
-  exchange: 'NSE' | 'BSE'
+  exchange: string
   onSelect(symbol: string): void
   placeholder?: string
   className?: string

@@ -31,18 +31,15 @@ class SquareOffManager:
     """Manages automatic square-off of MIS positions"""
 
     def __init__(self):
-        self.ist = pytz.timezone("Asia/Kolkata")
+        self.est = pytz.timezone("America/New_York")
 
         # Load square-off times from config
         self.square_off_times = {
-            "NSE": self._parse_time(get_config("nse_bse_square_off_time", "15:15")),
-            "BSE": self._parse_time(get_config("nse_bse_square_off_time", "15:15")),
-            "NFO": self._parse_time(get_config("nse_bse_square_off_time", "15:15")),
-            "BFO": self._parse_time(get_config("nse_bse_square_off_time", "15:15")),
-            "CDS": self._parse_time(get_config("cds_bcd_square_off_time", "16:45")),
-            "BCD": self._parse_time(get_config("cds_bcd_square_off_time", "16:45")),
-            "MCX": self._parse_time(get_config("mcx_square_off_time", "23:30")),
-            "NCDEX": self._parse_time(get_config("ncdex_square_off_time", "17:00")),
+            "NASDAQ": self._parse_time(get_config("us_equity_square_off_time", "15:45")),
+            "NYSE": self._parse_time(get_config("us_equity_square_off_time", "15:45")),
+            "AMEX": self._parse_time(get_config("us_equity_square_off_time", "15:45")),
+            "OTCQX": self._parse_time(get_config("us_equity_square_off_time", "15:45")),
+            "GLOBAL_INDEX": self._parse_time(get_config("us_equity_square_off_time", "15:45")),
         }
 
     def _parse_time(self, time_str):
@@ -60,7 +57,7 @@ class SquareOffManager:
         Should be called frequently (e.g., every minute)
         """
         try:
-            now = datetime.now(self.ist)
+            now = datetime.now(self.est)
             current_time = now.time()
 
             # Step 1: Cancel all open MIS orders past square-off time
@@ -319,7 +316,7 @@ class SquareOffManager:
             if not square_off_time:
                 return None
 
-            now = datetime.now(self.ist)
+            now = datetime.now(self.est)
             current_time = now.time()
 
             # Create datetime objects for comparison
@@ -339,7 +336,7 @@ class SquareOffManager:
     def get_square_off_status(self):
         """Get status of square-off times for all exchanges"""
         try:
-            now = datetime.now(self.ist)
+            now = datetime.now(self.est)
             current_time = now.time()
 
             status = {}
@@ -383,7 +380,7 @@ if __name__ == "__main__":
     status = som.get_square_off_status()
     logger.info("Configured square-off times:")
     for exchange, info in status.items():
-        logger.info(f"  {exchange}: {info['square_off_time']} IST")
+        logger.info(f"  {exchange}: {info['square_off_time']} EST")
 
     # Run check every minute
     check_interval = 60  # 1 minute

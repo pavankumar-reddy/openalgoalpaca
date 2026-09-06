@@ -1,0 +1,11 @@
+{
+    "Plugin Name": "alpaca",
+    "Plugin URI": "https://alpaca.markets",
+    "Description": "Alpaca Markets OpenAlgo Plugin - US equities / paper trading",
+    "Version": "0.1",
+    "Author": "OpenAlgo Migration",
+    "Author URI": "https://openalgo.in",
+    "supported_exchanges": ["NASDAQ", "NYSE", "AMEX"],
+    "broker_type": "US_stock",
+    "leverage_config": false
+}

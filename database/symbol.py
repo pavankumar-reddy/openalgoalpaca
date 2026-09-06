@@ -184,11 +184,21 @@ def fno_search_symbols_db(
                 # Symbol ends with FUT (e.g., NIFTY26DEC24FUT)
                 base_query = base_query.filter(SymToken.symbol.ilike("%FUT"))
             elif inst_type == "CE":
-                # Symbol ends with CE (e.g., NIFTY26DEC2424000CE)
-                base_query = base_query.filter(SymToken.symbol.ilike("%CE"))
+                # Symbol ends with CE or matches US OSI call option (C followed by 8 digits)
+                base_query = base_query.filter(
+                    or_(
+                        SymToken.symbol.like("%CE"),
+                        SymToken.symbol.like("%C________")
+                    )
+                )
             elif inst_type == "PE":
-                # Symbol ends with PE (e.g., NIFTY26DEC2424000PE)
-                base_query = base_query.filter(SymToken.symbol.ilike("%PE"))
+                # Symbol ends with PE or matches US OSI put option (P followed by 8 digits)
+                base_query = base_query.filter(
+                    or_(
+                        SymToken.symbol.like("%PE"),
+                        SymToken.symbol.like("%P________")
+                    )
+                )
 
         # Filter by strike price range (for options)
         if strike_min is not None:
@@ -450,5 +460,7 @@ def init_db():
     using the shared ``db_init_helper`` for consistent startup logging.
     """
     from database.db_init_helper import init_db_with_logging
+    from database.us_ticker_seeder import seed_us_tickers
 
     init_db_with_logging(Base, engine, "Master Contract DB", logger)
+    seed_us_tickers(db_session)

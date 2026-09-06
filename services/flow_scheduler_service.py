@@ -337,7 +337,7 @@ def is_within_market_hours(
 
     from database.market_calendar_db import get_effective_session_window
 
-    ist = pytz.timezone("Asia/Kolkata")
+    ist = pytz.timezone("America/New_York")
     now = now or datetime.now(ist)
 
     exch = (exchange or DEFAULT_MARKET_HOURS_EXCHANGE).upper()

@@ -33,6 +33,40 @@ interface BrokerConfig {
 
 // Broker-specific field configurations
 const brokerFields: Record<string, BrokerConfig> = {
+  alpaca: {
+    fields: [
+      {
+        name: 'api_key',
+        label: 'API Key ID',
+        type: 'text',
+        placeholder: 'Enter your Alpaca API Key ID',
+      },
+      {
+        name: 'api_secret',
+        label: 'API Secret Key',
+        type: 'password',
+        placeholder: 'Enter your Alpaca API Secret Key',
+      },
+    ],
+    callbackUrl: '/alpaca/callback',
+  },
+  robinhood: {
+    fields: [
+      {
+        name: 'username',
+        label: 'Username (Email)',
+        type: 'text',
+        placeholder: 'Enter your Robinhood email',
+      },
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
+        placeholder: 'Enter your Robinhood password',
+      },
+    ],
+    callbackUrl: '/robinhood/callback',
+  },
   fivepaisa: {
     fields: [
       {
@@ -402,7 +436,7 @@ export default function BrokerTOTP() {
       const data = await response.json()
 
       if (data.status === 'success' || response.ok) {
-        login(formData.userid || formData.mobile || '', broker || '')
+        login(formData.userid || formData.mobile || formData.username || formData.api_key || '', broker || '')
         showToast.success('Authentication successful')
         navigate('/dashboard')
       } else {

@@ -1,0 +1,11 @@
+{
+    "Plugin Name": "ibkr",
+    "Plugin URI": "https://www.interactivebrokers.com",
+    "Description": "Interactive Brokers (IBKR) OpenAlgo Plugin - US equities / options",
+    "Version": "0.1",
+    "Author": "OpenAlgo Migration",
+    "Author URI": "https://openalgo.in",
+    "supported_exchanges": ["NASDAQ", "NYSE", "AMEX", "OTCQX"],
+    "broker_type": "US_stock",
+    "leverage_config": false
+}

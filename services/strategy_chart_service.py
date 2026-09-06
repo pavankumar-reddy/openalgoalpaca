@@ -81,7 +81,7 @@ def _cap_last_n_trading_dates(series: list[dict], n: int, ist_tz: pytz.BaseTzInf
 
 def _convert_timestamp_to_ist(df: pd.DataFrame) -> pd.DataFrame | None:
     """Normalize a history dataframe's timestamp column to an IST datetime index."""
-    ist = pytz.timezone("Asia/Kolkata")
+    ist = pytz.timezone("America/New_York")
     try:
         if "timestamp" not in df.columns:
             logger.warning("No timestamp field in history data")
@@ -167,7 +167,7 @@ def get_strategy_chart_data(
         Tuple of (success: bool, response: dict, status_code: int).
     """
     try:
-        ist = pytz.timezone("Asia/Kolkata")
+        ist = pytz.timezone("America/New_York")
         start_date_str, end_date_str = _resolve_trading_window(days, ist)
 
         base_symbol = (underlying or "").strip().upper()

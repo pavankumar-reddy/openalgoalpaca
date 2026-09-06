@@ -7,8 +7,12 @@ export interface ExchangeOption {
   label: string
 }
 
-/** Default underlyings per F&O exchange */
+/** Default underlyings per exchange used by stock/option tools. */
 const UNDERLYINGS: Record<string, string[]> = {
+  NASDAQ: ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL'],
+  NYSE: ['IBM', 'JPM', 'XOM', 'V', 'C'],
+  AMEX: ['SPY', 'QQQ', 'IWM', 'XLE', 'XLK'],
+  OTCQX: ['SNAP', 'PLTR', 'SOFI', 'RIVN', 'SHOP'],
   NFO: ['NIFTY', 'BANKNIFTY', 'FINNIFTY', 'MIDCPNIFTY'],
   BFO: ['SENSEX', 'BANKEX'],
   MCX: ['GOLDM', 'CRUDEOIL', 'SILVERM', 'NATURALGAS', 'COPPER'],
@@ -16,8 +20,12 @@ const UNDERLYINGS: Record<string, string[]> = {
   CRYPTO: ['BTC', 'ETH', 'SOL', 'BNB', 'XRP'],
 }
 
-/** Index exchanges excluded from trading/FNO lists */
+/** Index exchanges excluded from trading lists. */
 const INDEX_EXCHANGES = new Set([
+  'NASDAQ_INDEX',
+  'NYSE_INDEX',
+  'AMEX_INDEX',
+  'US_INDEX',
   'NSE_INDEX',
   'BSE_INDEX',
   'MCX_INDEX',
@@ -25,11 +33,27 @@ const INDEX_EXCHANGES = new Set([
   'GLOBAL_INDEX',
 ])
 
-/** F&O exchange codes (intersected with each broker's reported capabilities below). */
-const FNO_CODES = new Set(['NFO', 'BFO', 'MCX', 'CDS', 'BCD', 'NCO', 'NCDEX', 'CRYPTO'])
+/** Exchange codes that should be treated as market-capable equity/derivative venues.
+ * The legacy Indian names are kept as compatibility aliases while the default broker
+ * metadata now uses NASDAQ/NYSE/AMEX for the US stock market.
+ */
+const FNO_CODES = new Set([
+  'NASDAQ',
+  'NYSE',
+  'AMEX',
+  'OTCQX',
+  'NFO',
+  'BFO',
+  'MCX',
+  'CDS',
+  'BCD',
+  'NCO',
+  'NCDEX',
+  'CRYPTO',
+])
 
 /** Fallback exchanges when capabilities haven't loaded yet (backward compatible) */
-const FALLBACK_EXCHANGES = ['NSE', 'BSE', 'NFO', 'BFO', 'CDS', 'MCX', 'CRYPTO']
+const FALLBACK_EXCHANGES = ['NASDAQ', 'NYSE', 'AMEX', 'CRYPTO']
 
 /**
  * Central hook for broker-aware exchange filtering.
@@ -80,11 +104,11 @@ export function useSupportedExchanges() {
     )
 
     // Defaults
-    const defaultExchange = tradingExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NSE')
-    const defaultFnoExchange = fnoExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NFO')
-    const defaultToolsFnoExchange = toolsFnoExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NFO')
+    const defaultExchange = tradingExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NASDAQ')
+    const defaultFnoExchange = fnoExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NASDAQ')
+    const defaultToolsFnoExchange = toolsFnoExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NASDAQ')
     const defaultStrategyBuilderExchange =
-      strategyBuilderExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NFO')
+      strategyBuilderExchanges[0]?.value ?? (isCrypto ? 'CRYPTO' : 'NASDAQ')
 
     // Underlyings filtered to only supported FNO exchanges
     const defaultUnderlyings: Record<string, string[]> = {}

@@ -22,36 +22,36 @@ def is_session_expiry_disabled():
 
 
 def get_session_expiry_time():
-    """Get session expiry time set to 3 AM IST next day"""
+    """Get session expiry time set to 3 AM EST next day"""
     # Skip expiry for crypto brokers (24/7 markets)
     if is_session_expiry_disabled():
         logger.debug("Session expiry disabled (crypto broker / 24/7 market)")
         return timedelta(days=365)
 
     now_utc = datetime.now(pytz.timezone("UTC"))
-    now_ist = now_utc.astimezone(pytz.timezone("Asia/Kolkata"))
+    now_est = now_utc.astimezone(pytz.timezone("America/New_York"))
 
     # Get configured expiry time or default to 3 AM
     expiry_time = os.getenv("SESSION_EXPIRY_TIME", "03:00")
     hour, minute = map(int, expiry_time.split(":"))
 
-    target_time_ist = now_ist.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    target_time_est = now_est.replace(hour=hour, minute=minute, second=0, microsecond=0)
 
     # If current time is past target time, set expiry to next day
-    if now_ist > target_time_ist:
-        target_time_ist += timedelta(days=1)
+    if now_est > target_time_est:
+        target_time_est += timedelta(days=1)
 
-    remaining_time = target_time_ist - now_ist
-    logger.debug(f"Session expiry time set to: {target_time_ist}")
+    remaining_time = target_time_est - now_est
+    logger.debug(f"Session expiry time set to: {target_time_est}")
     return remaining_time
 
 
 def set_session_login_time():
-    """Set the session login time in IST"""
+    """Set the session login time in EST"""
     now_utc = datetime.now(pytz.timezone("UTC"))
-    now_ist = now_utc.astimezone(pytz.timezone("Asia/Kolkata"))
-    session["login_time"] = now_ist.isoformat()
-    logger.info(f"Session login time set to: {now_ist}")
+    now_est = now_utc.astimezone(pytz.timezone("America/New_York"))
+    session["login_time"] = now_est.isoformat()
+    logger.info(f"Session login time set to: {now_est}")
 
 
 def is_session_valid():
@@ -71,7 +71,7 @@ def is_session_valid():
         return True
 
     now_utc = datetime.now(pytz.timezone("UTC"))
-    now_ist = now_utc.astimezone(pytz.timezone("Asia/Kolkata"))
+    now_est = now_utc.astimezone(pytz.timezone("America/New_York"))
 
     # Parse login time
     login_time = datetime.fromisoformat(session["login_time"])
@@ -81,49 +81,49 @@ def is_session_valid():
     hour, minute = map(int, expiry_time.split(":"))
 
     # Get today's expiry time
-    daily_expiry = now_ist.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    daily_expiry = now_est.replace(hour=hour, minute=minute, second=0, microsecond=0)
 
     # If current time is past expiry time and login was before expiry time
-    if now_ist > daily_expiry and login_time < daily_expiry:
-        logger.info(f"Session expired at {daily_expiry} IST")
+    if now_est > daily_expiry and login_time < daily_expiry:
+        logger.info(f"Session expired at {daily_expiry} EST")
         return False
 
     logger.debug(
-        f"Session valid. Current time: {now_ist}, Login time: {login_time}, Daily expiry: {daily_expiry}"
+        f"Session valid. Current time: {now_est}, Login time: {login_time}, Daily expiry: {daily_expiry}"
     )
     return True
 
 
-def _todays_rollover_boundary(now_ist=None):
-    """Return today's session-expiry boundary (default 03:00 IST) as a
-    timezone-aware IST datetime. Mirrors the boundary used by is_session_valid().
+def _todays_rollover_boundary(now_est=None):
+    """Return today's session-expiry boundary (default 03:00 EST) as a
+    timezone-aware EST datetime. Mirrors the boundary used by is_session_valid().
 
-    Accepts an existing IST snapshot so a caller that already read the clock
+    Accepts an existing EST snapshot so a caller that already read the clock
     compares against the same instant its date was derived from, rather than
     two reads that could straddle the boundary.
     """
-    if now_ist is None:
-        now_ist = datetime.now(pytz.timezone("UTC")).astimezone(pytz.timezone("Asia/Kolkata"))
+    if now_est is None:
+        now_est = datetime.now(pytz.timezone("UTC")).astimezone(pytz.timezone("America/New_York"))
     expiry_time = os.getenv("SESSION_EXPIRY_TIME", "03:00")
     hour, minute = map(int, expiry_time.split(":"))
-    return now_ist.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    return now_est.replace(hour=hour, minute=minute, second=0, microsecond=0)
 
 
 def get_trading_session_date():
-    """Return the current trading session's date as an ISO string (IST).
+    """Return the current trading session's date as an ISO string (EST).
 
-    A trading session runs from SESSION_EXPIRY_TIME (default 03:00 IST) to the
+    A trading session runs from SESSION_EXPIRY_TIME (default 03:00 EST) to the
     same time next day, matching the broker token rollover. Between midnight
     and that boundary the session still belongs to the *previous* calendar
     date, so anything bucketed "per trading day" must use this rather than
-    ``date.today()`` - which is also the server's local date and may not be IST
-    at all on a host outside India.
+    ``date.today()`` - which is also the server's local date and may not be EST
+    at all on a host outside the US.
     """
-    now_ist = datetime.now(pytz.timezone("UTC")).astimezone(pytz.timezone("Asia/Kolkata"))
-    boundary = _todays_rollover_boundary(now_ist)
-    if now_ist < boundary:
-        return (now_ist - timedelta(days=1)).date().isoformat()
-    return now_ist.date().isoformat()
+    now_est = datetime.now(pytz.timezone("UTC")).astimezone(pytz.timezone("America/New_York"))
+    boundary = _todays_rollover_boundary(now_est)
+    if now_est < boundary:
+        return (now_est - timedelta(days=1)).date().isoformat()
+    return now_est.date().isoformat()
 
 
 def _has_fresher_session(username, current_session_id=None):
@@ -139,7 +139,7 @@ def _has_fresher_session(username, current_session_id=None):
         from database.auth_db import get_active_sessions
 
         boundary = _todays_rollover_boundary()
-        ist = pytz.timezone("Asia/Kolkata")
+        est = pytz.timezone("America/New_York")
         for sess in get_active_sessions(username):
             if current_session_id and sess.get("session_id") == current_session_id:
                 continue
@@ -151,9 +151,9 @@ def _has_fresher_session(username, current_session_id=None):
             except ValueError:
                 continue
             # SQLite returns naive datetimes (tz stripped on storage); the value
-            # is IST wall-clock, so localize it before comparing.
+            # is EST wall-clock, so localize it before comparing.
             if login_dt.tzinfo is None:
-                login_dt = ist.localize(login_dt)
+                login_dt = est.localize(login_dt)
             if login_dt >= boundary:
                 return True
     except Exception as e:

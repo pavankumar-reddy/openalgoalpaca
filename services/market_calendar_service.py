@@ -43,7 +43,7 @@ def get_holidays(year: int | None = None) -> tuple[bool, dict[str, Any], int]:
 
         return (
             True,
-            {"status": "success", "year": year, "timezone": "Asia/Kolkata", "data": holidays},
+            {"status": "success", "year": year, "timezone": "America/New_York", "data": holidays},
             200,
         )
 
